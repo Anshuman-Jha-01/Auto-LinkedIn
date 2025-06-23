@@ -29,9 +29,9 @@ app.get("/", (req, res) => {
 });
 
 app.post("/job", (req, res) => {
-  let {linkedin_email,linkedin_password,nodemailer_email,nodemailer_password,job_title} = req.body;  
+  let {linkedin_email,linkedin_password,nodemailer_email,nodemailer_password,job_title,job_type,experience_level} = req.body;  
   job_title = job_title.trim().toLowerCase().replace(/[^a-zA-Z\d\s]+/g, "-").replace(/\s/g, "-");
-  // searchJobs(linkedin_email,linkedin_password,nodemailer_email,nodemailer_password,job_title);
+  searchJobs(linkedin_email,linkedin_password,nodemailer_email,nodemailer_password,job_title,job_type,experience_level);
   res.render("sent.ejs");
 });
 
@@ -109,12 +109,13 @@ async function getJobAnalysis(jobDescriptions,nodemailer_email,nodemailer_passwo
 
   // Extract the container div content
   const containerContent = $(".main_container").html();
-
+ 
+  
   sendEmail(containerContent,nodemailer_email,nodemailer_password);
 }
 
 // Puppeteer code for automation
-async function searchJobs(linkedin_email,linkedin_password,nodemailer_email,nodemailer_password,job_title) {
+async function searchJobs(linkedin_email,linkedin_password,nodemailer_email,nodemailer_password,job_title,job_type,experience_level) {
   const browser = await puppeteer.launch({
     headless: false,
     defaultViewport: false,
@@ -127,8 +128,17 @@ async function searchJobs(linkedin_email,linkedin_password,nodemailer_email,node
   await page.waitForNavigation();
   await page.waitForSelector("img");
 
+  let expLevels = [];
+  let jobTypes = [];
+  for(let i=1;i<=experience_level;i++) {
+    expLevels.push(i);
+  }
+  for(let i=1;i<=job_type;i++) {
+    jobTypes.push(i);
+  }  
+
   await page.goto(
-    `https://www.linkedin.com/jobs/search/?keywords=${job_title}`
+    `https://www.linkedin.com/jobs/search/?keywords=${job_title}&f_E=${expLevels.join(",")}&f_WT=${jobTypes.join(",")}`
   );
 
   let jobLinks = await page.evaluate(() => {
@@ -143,7 +153,7 @@ async function searchJobs(linkedin_email,linkedin_password,nodemailer_email,node
     try {
       await page.goto(link, { waitUntil: "domcontentloaded" });
       // Extract content of the div
-      const jobDescription = await page.$eval(".mt4 p", (el) => {       
+      const jobDescription = await page.$eval(".jobs-box__html-content", (el) => {       
         return { jobLink: window.location.href, jobDetails: el.innerText };
       });
 

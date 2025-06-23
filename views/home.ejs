@@ -27,28 +27,52 @@
                             <div class="mb-3">
                                 <label for="linkedin_email" class="form-label">LinkedIn Email:</label>
                                 <input type="email" class="form-control" name="linkedin_email" id="linkedin_email"
-                                    placeholder="Enter your LinkedIn email">
+                                    placeholder="Enter your LinkedIn email" required>
                             </div>
                             <div class="mb-3">
                                 <label for="linkedin_password" class="form-label">LinkedIn Password:</label>
                                 <input type="password" class="form-control" name="linkedin_password"
-                                    id="linkedin_password" placeholder="Enter your LinkedIn password">
+                                    id="linkedin_password" placeholder="Enter your LinkedIn password" required>
                             </div>
                             <div class="mb-3">
                                 <label for="nodemailer_email" class="form-label">Receiver Email:</label>
                                 <input type="email" class="form-control" name="nodemailer_email" id="nodemailer_email"
-                                    placeholder="Enter the receiver email">
+                                    placeholder="Enter the receiver email" required>
                             </div>
                             <div class="mb-3">
                                 <label for="nodemailer_password" class="form-label">Receiver App Password:</label>
                                 <input type="password" class="form-control" name="nodemailer_password"
-                                    id="nodemailer_password" placeholder="Enter App password for receiver email">
+                                    id="nodemailer_password" placeholder="Enter App password for receiver email"
+                                    required>
                             </div>
+
+                            <div class="row g-3 mb-3">
+
+                                <div class="col">
+                                    <label for="job_title" class="form-label">Job Title:</label>
+                                    <input type="text" class="form-control" name="job_title" id="job_title"
+                                        placeholder="Enter your job title" required>
+                                </div>
+
+                                <div class="col">
+                                    <label for="jobType" class="form-label">Job Type:</label>
+                                    <input type="range" class="form-range" name="job_type" min="1" max="3" step="1"
+                                        id="jobType" oninput="updateJobType(this.value)">
+                                    <div id="jobDisplay" class="mt-2 badge bg-info text-dark shadow-md">On-site
+                                    </div>
+                                </div>
+
+                            </div>
+
                             <div class="mb-3">
-                                <label for="job_title" class="form-label">Job Title:</label>
-                                <input type="text" class="form-control" name="job_title" id="job_title"
-                                    placeholder="Enter your job title">
+                                <label for="experienceRange" class="form-label">Experience Level:</label>
+                                <input type="range" class="form-range" name="experience_level" min="1" max="6" step="1"
+                                    id="experienceRange" oninput="updateExperience(this.value)">
+                                <div id="experienceDisplay" class="mt-2 badge bg-info text-dark shadow-md">
+                                    Internship
+                                </div>
                             </div>
+
                             <button type="submit" class="btn btn-primary w-100">Submit</button>
                         </form>
                     </div>
@@ -62,6 +86,35 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
         integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
         crossorigin="anonymous"></script>
+
+    <script>
+        const levels = [
+            "Internship",
+            "Entry level",
+            "Associate",
+            "Mid-Senior level",
+            "Director",
+            "Executive"
+        ];
+
+        const jobTypes = ["On-site", "Hybrid", "Remote"];
+
+        function updateExperience(val) {
+            const display = document.getElementById("experienceDisplay");
+            const selected = levels.slice(0, val).join(", ");
+            display.textContent = selected;
+        }
+
+        function updateJobType(val) {
+            const display = document.getElementById("jobDisplay");
+            const selected = jobTypes.slice(0, val).join(", ");
+            display.textContent = selected;
+        }
+
+        // Initialize on page load
+        updateExperience(document.getElementById("experienceRange").value);
+        updateJobType(document.getElementById("jobType").value);
+    </script>
 
 </body>
 
